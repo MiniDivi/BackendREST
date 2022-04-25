@@ -2,24 +2,27 @@
     <?php
 
     include "queries.php";
-    //header("Content-Type: application/json");
     $requestedMethod = $_SERVER['REQUEST_METHOD']; //ottengo il metodo richiesto.
 
 
     $page = isset($_GET['page']) ? $_GET['page'] : 0;
     $size = isset($_GET['size']) ? $_GET['size'] : 20;
+    $data = json_decode(file_get_contents('php://input'));
 
-    echo $lastPage;
 
     //*Riconoscimento del metodo HTTP
-    if ($requestedMethod == "POST") {
-        echo "POST <br>";
-    } else if ($requestedMethod == "GET") {
+    if ($requestedMethod === "POST") {
+        echo postRequest($data);
+    } else if ($requestedMethod === "GET" && !isset($_GET['id'])) {
         echo getRequest($page, $size);
-    } else if ($requestedMethod == "PUT") {
-        echo "PUT <br>";
-    } else if ($requestedMethod == ".DELETE") {
-        echo ".DELETE <br>";
+    } 
+    else if($requestedMethod === "GET" && isset($_GET['id'])){
+        echo getEmployeeRequest($_GET['id']);
+    } 
+    else if ($requestedMethod === "PUT") {
+        echo putRequest($data);
+    } else if ($requestedMethod === 'DELETE' && isset($_GET['id'])) {
+        echo deleteRequest($_GET['id']);
     }
 
     ?>
